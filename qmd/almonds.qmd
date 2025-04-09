@@ -35,6 +35,12 @@ tmin_c: Daily minimum temperature (°C)
 
 precip: Daily precipitation (mm)
 
+Other parameters:
+	- location: California
+	- time frame: 1989-2010
+	- yield model adjusted R**2 = 0.88
+	- yield model developed from monthly averages aggregated to the state scale from 1980 - 2003 records. This excludes factors such as extreme heat events or spatial variations.
+
 These inputs are used to compute annual almond yield anomalies. The expected outputs include the maximum, minimum, and mean yield anomalies across all years in the dataset. According to the assignment benchmark, the modeled yield anomalies should approximately range between –0.027 to 1920 tons/acre, with a mean around 182 tons/acre.
 
 ## Data Processing
