@@ -1,0 +1,103 @@
+---
+title: "Almond Yield Anomalies"
+author: "Jackson Coldiron and Kaitlin Castor"
+editor: visual
+format: 
+  html:
+    code-fold: true
+    embed-resources: true
+    theme: lumen
+    toc: true
+execute:
+  freeze: auto 
+  warning: false
+  message: false
+---
+
+## Introduction
+
+This project implements a simplified model of almond yield anomaly in response to climate variables, adapted from the transfer functions developed by Lobell et al. (2006). The model estimates annual yield anomalies using daily climate data, specifically focusing on minimum and maximum temperatures and precipitation. The goal is to understand how year-to-year climate variability impacts almond productivity in California and to replicate expected yield patterns based on historical data.
+
+## Data
+The climate dataset (clim.txt) contains daily weather observations including:
+
+day: Day of the month
+
+month: Calendar month
+
+year: Calendar year
+
+wy: Water year
+
+tmax_c: Daily maximum temperature (°C)
+
+tmin_c: Daily minimum temperature (°C)
+
+precip: Daily precipitation (mm)
+
+These inputs are used to compute annual almond yield anomalies. The expected outputs include the maximum, minimum, and mean yield anomalies across all years in the dataset. According to the assignment benchmark, the modeled yield anomalies should approximately range between –0.027 to 1920 tons/acre, with a mean around 182 tons/acre.
+
+## Data Processing
+```{r}
+# Import libraries
+library(tidyverse)
+library(here)
+library(dplyr)
+library(purrr)
+library(tibble)
+library(knitr)
+library(kableExtra)
+
+# Import data and function
+climate_data_raw <- read.table(here("data", "clim.txt"), header = TRUE, sep = "", quote = "\"")
+
+source(here("R", "almond_yield_function.R"))
+
+# Summarize inputs by year for model
+yearly_anomalies <- climate_data_raw |>
+  group_by(year) |>
+  summarise(
+    Tn = mean(tmin_c[month == 2], na.rm = TRUE),
+    Tx = mean(tmax_c[month == 2], na.rm = TRUE),
+    P = sum(precip[month == 1], na.rm = TRUE)) |>
+    drop_na()
+
+```
+
+## Function Implementation
+```{r}
+# Apply the function to each year
+yearly_anomalies <- yearly_anomalies |>
+  group_by(year) |>
+  summarise(
+    yield_anomaly = almond_yield(Tn, Tx, P)
+  )
+
+# Output Statistics
+yield_stats <- yearly_anomalies |>
+  summarise(
+    max_yield = max(yield_anomaly),
+    min_yield = min(yield_anomaly),
+    mean_yield = mean(yield_anomaly)
+  )
+
+yield_stats <- yield_stats |>
+  rename(
+    `Max Yield` = max_yield,
+    `Min Yield` = min_yield,
+    `Mean Yield` = mean_yield
+  )
+
+```
+
+
+## Results
+```{r}
+# Display with kable
+yield_stats |>
+  kable(digits = 4, caption = "Annual Almond Yield Anomaly Summary (ton/acre)") |>
+  kable_styling(font_size = 12, full_width = FALSE)
+
+```
+
+
