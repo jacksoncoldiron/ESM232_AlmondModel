@@ -11,3 +11,26 @@ source(here("R", "almondmodel.R"))
 # Select for 
 climate_data <- climate_data_raw |>
   filter(month = 1 )
+
+# temperature data frame (code lines: 15-35)
+
+
+
+
+
+
+
+
+# precipitation data frame
+
+
+
+
+
+
+
+
+
+
+
+# organizing results
