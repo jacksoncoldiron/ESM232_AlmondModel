@@ -1,10 +1,13 @@
-#assignment 2
+# Assignment 2
 
-#import libraries
+# Import libraries
 library(tidyverse)
 library(here)
 
-#import data and function
-climate_data_raw <- read.csv(here("assignment 2", "clim.txt"))
+# Import data and function
+climate_data_raw <- read.table(here("assignment 2", "clim.txt"), header = TRUE, sep = "", quote = "\"")
+source(here("R", "almondmodel.R"))
 
-climate_data <- separate(climate_data_raw, sep = ".")
+# Select for 
+climate_data <- climate_data_raw |>
+  filter(month = 1 )
