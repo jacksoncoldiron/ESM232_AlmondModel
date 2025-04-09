@@ -4,7 +4,7 @@
 
 #' parameters
 #' @param Y = yield anomaly (ton / acre)
-#' @param Tn = minimum temperature (degrees C) -- month 2 (- = pre harvest)
+#' @param Tn = minimum temperature (degrees C) -- subscript = the month (- = pre harvest). we use February (2) in our function
 #' @param Tx = maximum temperature (degrees C)
 #' @param P = precipitation
 #' 
