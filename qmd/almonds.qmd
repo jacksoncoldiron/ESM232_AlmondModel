@@ -43,6 +43,12 @@ Other parameters:
 
 These inputs are used to compute annual almond yield anomalies. The expected outputs include the maximum, minimum, and mean yield anomalies across all years in the dataset. According to the assignment benchmark, the modeled yield anomalies should approximately range between –0.027 to 1920 tons/acre, with a mean around 182 tons/acre.
 
+## Conceptual Model
+```{r}
+knitr::include_graphics(here::here("data", "assignment2_conceptualmodel.jpg"))
+```
+
+
 ## Data Processing
 ```{r}
 # Import libraries
@@ -76,7 +82,7 @@ yearly_anomalies <- climate_data_raw |>
 yearly_anomalies <- yearly_anomalies |>
   group_by(year) |>
   summarise(
-    yield_anomaly = almond_yield(Tn, Tx, P)
+    yield_anomaly = almond_yield(Tn, P)
   )
 
 # Output Statistics
@@ -94,6 +100,17 @@ yield_stats <- yield_stats |>
     `Mean Yield` = mean_yield
   )
 
+# Plot results
+yearly_anomalies |>
+  ggplot(aes(x = year, y = yield_anomaly)) +
+  geom_line(color = "skyblue") +
+  geom_point() +
+  labs(
+    title = "Annual Almond Yield Anomalies (1989-2010)",
+    x = "Year",
+    y = "Yield Anomaly (ton/acre)"
+  ) +
+  theme_classic()
 ```
 
 
