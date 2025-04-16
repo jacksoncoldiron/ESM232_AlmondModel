@@ -48,17 +48,22 @@ yearly_anomalies <- climate_data_raw |>
 
 ## Almond Profit
 # Apply the function to each year
+```{r}
 yearly_profit <- yearly_anomalies |>
   group_by(year) |>
   summarise(
     yield_anomaly = almond_yield_function(Tn, P)
     profit = almond_profit_function(price_per_ton, cost_per_ton = 5, yield_anomaly, baseline_yield = 10)
   )
+```
+
+
 
 ## Sensitivity Analysis
-#### Price per ton Sensitivity
+#### Price per ton Sensitivity - Jackson 
 
-#### Cost per ton Sensitivity
+
+#### Cost per ton Sensitivity - Kaitlin
 
 #### Figure 1: Comparison of parameters sensitivity on profit
 
