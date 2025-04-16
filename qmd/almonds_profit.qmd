@@ -34,24 +34,34 @@ library(kableExtra)
 climate_data_raw <- read.table(here("data", "clim.txt"), header = TRUE, sep = "", quote = "\"")
 
 source(here("R", "almond_yield_function.R"))
+source(here("R", "almond_profit_function.R"))
 
 # Summarize inputs by year for model
 yearly_anomalies <- climate_data_raw |>
   group_by(year) |>
   summarise(
     Tn = mean(tmin_c[month == 2], na.rm = TRUE),
-    Tx = mean(tmax_c[month == 2], na.rm = TRUE),
     P = sum(precip[month == 1], na.rm = TRUE)) |>
     drop_na()
 
 ```
 
 ## Almond Profit
+# Apply the function to each year
+yearly_profit <- yearly_anomalies |>
+  group_by(year) |>
+  summarise(
+    yield_anomaly = almond_yield_function(Tn, P)
+    profit = almond_profit_function(price_per_ton, cost_per_ton = 5, yield_anomaly, baseline_yield = 10)
+  )
 
 ## Sensitivity Analysis
+#### Price per ton Sensitivity
+
+#### Cost per ton Sensitivity
 
 #### Figure 1: Comparison of parameters sensitivity on profit
 
-#### Figure 2: 
+#### Figure 2: Overall Variation of Yield Anomaly
 
-#### Discussion
+## Discussion

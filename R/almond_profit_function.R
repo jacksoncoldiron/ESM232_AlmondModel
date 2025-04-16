@@ -10,7 +10,7 @@
 #' @param yield_anomaly difference between the actual and expected yield (ton / acre)
 #' @return data frame with estimate of profit
 
-almond_profit <- function(price_per_ton, costs_per_acre, baseline_yield, yield_anomaly) {
+almond_profit <- function(price_per_ton = 1, costs_per_acre = 10, baseline_yield = 5, yield_anomaly) {
   
   actual_yield <- baseline_yield + yield_anomaly
   revenue <- price_per_ton * actual_yield
