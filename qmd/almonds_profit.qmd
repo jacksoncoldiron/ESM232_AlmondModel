@@ -14,23 +14,44 @@ execute:
   message: false
 ---
 
-## Quarto
+## Introduction
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+## Data
+#### Data Description
 
-## Running Code
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
-
+#### Data Processing
 ```{r}
-1 + 1
+# Import libraries
+library(tidyverse)
+library(here)
+library(dplyr)
+library(purrr)
+library(tibble)
+library(knitr)
+library(kableExtra)
+
+# Import data and function
+climate_data_raw <- read.table(here("data", "clim.txt"), header = TRUE, sep = "", quote = "\"")
+
+source(here("R", "almond_yield_function.R"))
+
+# Summarize inputs by year for model
+yearly_anomalies <- climate_data_raw |>
+  group_by(year) |>
+  summarise(
+    Tn = mean(tmin_c[month == 2], na.rm = TRUE),
+    Tx = mean(tmax_c[month == 2], na.rm = TRUE),
+    P = sum(precip[month == 1], na.rm = TRUE)) |>
+    drop_na()
+
 ```
 
-You can add options to executable code like this
+## Almond Profit
 
-```{r}
-#| echo: false
-2 * 2
-```
+## Sensitivity Analysis
 
-The `echo: false` option disables the printing of code (only output is displayed).
+#### Figure 1: Comparison of parameters sensitivity on profit
+
+#### Figure 2: 
+
+#### Discussion

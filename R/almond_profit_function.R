@@ -4,14 +4,19 @@
 # computes profit from almond yield, calling on the almond yield function
 
 #' parameters
-#' @param  price ($ / ton)
-#' @param  yield (ton / acre) = almond yield anomaly
-#' @param  year (when was almond yield)
-#' @param discount rate (default 0.12)
+#' @param  price_per_ton ($ / ton)
+#' @param  costs_per_acre ($ / acre)
+#' @param  baseline_yield baseline ore expected yield (ton / acre)
+#' @param yield_anomaly difference between the actual and expected yield (ton / acre)
 #' @return data frame with estimate of profit
 
-almond_profit <- function(yield, year, price, discount = 0.12) {
+almond_profit <- function(price, costs, baseline_yield, yield_anomaly) {
   
+  actual_yield <- baseline_yield + yield_anomaly
+  revenue <- price_per_ton * actual_yield
+  profit <- revenue - costs_per_acre
+  
+  return(profit)
   
   
 }
