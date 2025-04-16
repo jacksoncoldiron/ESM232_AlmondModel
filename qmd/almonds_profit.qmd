@@ -17,9 +17,11 @@ execute:
 ## Introduction
 
 ## Data
+
 #### Data Description
 
 #### Data Processing
+
 ```{r}
 # Import libraries
 library(tidyverse)
@@ -47,7 +49,9 @@ yearly_anomalies <- climate_data_raw |>
 ```
 
 ## Almond Profit
+
 # Apply the function to each year
+
 ```{r}
 yearly_profit <- yearly_anomalies |>
   group_by(year) |>
@@ -57,13 +61,60 @@ yearly_profit <- yearly_anomalies |>
   )
 ```
 
-
-
 ## Sensitivity Analysis
-#### Price per ton Sensitivity - Jackson 
 
+#### Price per ton Sensitivity - Jackson
 
 #### Cost per ton Sensitivity - Kaitlin
+
+```{r}
+# generate samples for both parameters
+nsamples <- 300
+deviation <- 0.15
+base_cost <- 10000
+costs_per_acre <- runif(
+  min = base_cost - deviation * base_cost,
+  max = base_cost + deviation * base_cost, n = nsamples
+)
+
+price_per_ton <- rnorm(mean = 0.6, sd = 0.1, n = nsamples)
+
+parms <- cbind.data.frame(costs_per_acre, price_per_ton)
+
+# use pmap
+# takes function name and then names of all parameters that don't change
+results <- parms %>% pmap(almond_profit_function,
+  baseline_yield = 5,
+  yield_anomaly = #function output?, clr = "green",
+  profit = "$", g = FALSE, etype = "direct"    # I don't know what this line means
+)
+
+results[[1]]
+length(results)
+
+# now we can extract results from the list as above
+mean_profit <- map_df(results, `[`, c("mean"))
+# and we can add the parameter values for each run
+mean_profit <- cbind.data.frame(mean_profit, parms)
+
+# plot - pick on of the 2 parameter as a color
+
+p1 <- ggplot(mean_profit, aes(costs_per_acre, mean, col = price_per_ton)) +
+  geom_point(cex = 2) +
+  labs(y = "Mean Annual Profit $", x = "Cost per Acre ($/acre)  \n above which energy production is more efficient")
+p2 <- ggplot(mean_profit, aes(price_per_ton, mean, col = costs_per_acre)) +
+  geom_point(cex = 2) +
+  labs(y = "Mean Annual Profit $", x = "Price per tone $")
+ggarrange(p1, p2)
+
+# what do we learn from this
+
+# extract annual #I did not touch this yet
+tmp <- map_df(results, `[`, c("annual"))
+annual_elect <- as.data.frame(tmp$annual$year)
+colnames(annual_elect) <- "year"
+annual_elect$elect <- tmp$annual$elect
+```
 
 #### Figure 1: Comparison of parameters sensitivity on profit
 
