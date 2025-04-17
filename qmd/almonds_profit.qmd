@@ -86,7 +86,7 @@ parms <- cbind.data.frame(costs_per_acre, price_per_ton)
 # takes function name and then names of all parameters that don't change
 results <- parms %>% pmap(almond_profit_function,
   baseline_yield = 1,
-  yield_anomaly = #function output?, clr = "green",
+  yield_anomaly = almond_yield, clr = "green", #function output?
   profit = "$", g = FALSE, etype = "direct"    # I don't know what this line means
 )
 

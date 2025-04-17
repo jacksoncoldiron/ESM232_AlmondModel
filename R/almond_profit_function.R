@@ -8,7 +8,9 @@
 #' @param  costs_per_acre ($ / acre)
 #' @param  baseline_yield baseline ore expected yield (ton / acre)
 #' @param yield_anomaly difference between the actual and expected yield (ton / acre)
-#' @return data frame with estimate of profit
+#' @return actual_yield (ton / acre)
+#' @return revenue ($ / ton)
+#' @return profit ($ / ton)
 
 almond_profit <- function(price_per_ton = 1, costs_per_acre = 10, baseline_yield = 5, yield_anomaly) {
   
