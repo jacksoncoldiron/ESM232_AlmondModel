@@ -57,7 +57,7 @@ yearly_anomalies <- climate_data_raw |>
 yearly_profit <- yearly_anomalies |>
   group_by(year) |>
   summarise(
-    yield_anomaly = almond_yield_function(Tn, P)
+    yield_anomaly = almond_yield_function(Tn, P),
     profit = almond_profit_function(price_per_ton, cost_per_ton = 5, yield_anomaly, baseline_yield = 10)
   )
 ```
