@@ -33,6 +33,9 @@ library(tibble)
 library(knitr)
 library(kableExtra)
 
+# Define baseline yield
+baseline <- 5
+
 # Import data and function
 climate_data_raw <- read.table(here("data", "clim.txt"), header = TRUE, sep = "", quote = "\"")
 
@@ -45,7 +48,8 @@ yearly_anomalies <- climate_data_raw |>
   summarise(
     Tn = mean(tmin_c[month == 2], na.rm = TRUE),
     P = sum(precip[month == 1], na.rm = TRUE)) |>
-    drop_na()
+    drop_na() |>
+  mutate(yield_anomaly = almond_yield(Tn, P))
 
 ```
 
@@ -62,7 +66,7 @@ yearly_profits <- yearly_anomalies |>
   mutate(
     profit = pmap_dbl(
       list(Tn, P),
-      ~ almond_profit_wrapper(..1, ..2)
+      ~ almond_profit_wrapper(Tn, P)
     )
   )
 ```
@@ -76,6 +80,9 @@ yearly_profits <- yearly_anomalies |>
 nsamples <- 300
 deviation <- 0.15
 base_cost <- 15000
+
+set.seed(42)  # for reproducibility
+
 costs_per_acre <- runif(
   min = base_cost - deviation * base_cost,
   max = base_cost + deviation * base_cost, n = nsamples
@@ -85,21 +92,25 @@ price_per_ton <- rnorm(mean = 4000, sd = 0.1, n = nsamples)
 
 parms <- cbind.data.frame(costs_per_acre, price_per_ton)
 
-# use pmap
-# takes function name and then names of all parameters that don't change
-results <- parms %>% pmap(almond_profit,
-  baseline_yield = 1,
-  yield_anomaly = almond_yield, clr = "green", #function output?
-  profit = "$", g = FALSE, etype = "direct"    # I don't know what this line means
+# create dataframe with all combinations of parameters
+sensitivity_df <- crossing(
+  yearly_anomalies,
+  parms
 )
 
-results[[1]]
-length(results)
-
-# now we can extract results from the list as above
-mean_profit <- map_df(results, `[`, c("mean"))
-# and we can add the parameter values for each run
-mean_profit <- cbind.data.frame(mean_profit, parms)
+# run the profit function across the new dataframe
+sensitivity_profit <- sensitivity_df |>
+  mutate(
+    profit = pmap_dbl(
+      list(price_per_ton, costs_per_acre, yield_anomaly),
+      ~ almond_profit(
+          price_per_ton = price_per_ton,
+          costs_per_acre = costs_per_acre,
+          baseline_yield = baseline,
+          yield_anomaly = yield_anomaly
+        )
+    )
+  )
 
 ```
 
@@ -107,7 +118,6 @@ mean_profit <- cbind.data.frame(mean_profit, parms)
 
 ```{r}
 # plot - pick on of the 2 parameter as a color
-
 p1 <- ggplot(mean_profit, aes(costs_per_acre, mean, col = price_per_ton)) +
   geom_point(cex = 2) +
   labs(y = "Mean Annual Profit $", x = "Cost per Acre ($/acre)  \n above which energy production is more efficient")
