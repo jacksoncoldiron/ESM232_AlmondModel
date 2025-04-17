@@ -98,6 +98,11 @@ mean_profit <- map_df(results, `[`, c("mean"))
 # and we can add the parameter values for each run
 mean_profit <- cbind.data.frame(mean_profit, parms)
 
+```
+
+#### Figure 1: Comparison of parameters sensitivity on profit
+
+```{r}
 # plot - pick on of the 2 parameter as a color
 
 p1 <- ggplot(mean_profit, aes(costs_per_acre, mean, col = price_per_ton)) +
@@ -116,8 +121,6 @@ annual_elect <- as.data.frame(tmp$annual$year)
 colnames(annual_elect) <- "year"
 annual_elect$elect <- tmp$annual$elect
 ```
-
-#### Figure 1: Comparison of parameters sensitivity on profit
 
 #### Figure 2: Overall Variation of Yield Anomaly
 
