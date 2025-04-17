@@ -1,4 +1,5 @@
 ---
+2222---
 title: "Almond Yield Anomalies"
 author: "Jackson Coldiron and Kaitlin Castor"
 editor: visual
@@ -71,20 +72,20 @@ yearly_profit <- yearly_anomalies |>
 # generate samples for both parameters
 nsamples <- 300
 deviation <- 0.15
-base_cost <- 10000
+base_cost <- 15000
 costs_per_acre <- runif(
   min = base_cost - deviation * base_cost,
   max = base_cost + deviation * base_cost, n = nsamples
 )
 
-price_per_ton <- rnorm(mean = 0.6, sd = 0.1, n = nsamples)
+price_per_ton <- rnorm(mean = 4000, sd = 0.1, n = nsamples)
 
 parms <- cbind.data.frame(costs_per_acre, price_per_ton)
 
 # use pmap
 # takes function name and then names of all parameters that don't change
 results <- parms %>% pmap(almond_profit_function,
-  baseline_yield = 5,
+  baseline_yield = 1,
   yield_anomaly = #function output?, clr = "green",
   profit = "$", g = FALSE, etype = "direct"    # I don't know what this line means
 )
