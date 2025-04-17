@@ -51,20 +51,23 @@ yearly_anomalies <- climate_data_raw |>
 
 ## Almond Profit
 
-# Apply the function to each year
+# Apply the almond wrapper function to each year
 
 ```{r}
-yearly_profit <- yearly_anomalies |>
-  group_by(year) |>
-  summarise(
-    yield_anomaly = almond_yield_function(Tn, P)
-    profit = almond_profit_function(price_per_ton, cost_per_ton = 5, yield_anomaly, baseline_yield = 10)
+# Bring in the wrapper function
+source(here("R", "almond_wrapper_function.R"))
+
+# Apply wrapper function on each year
+yearly_profits <- yearly_anomalies |>
+  mutate(
+    profit = pmap_dbl(
+      list(Tn, P),
+      ~ almond_profit_wrapper(..1, ..2)
+    )
   )
 ```
 
 ## Sensitivity Analysis
-
-#### Price per ton Sensitivity - Jackson
 
 #### Cost per ton Sensitivity - Kaitlin
 
@@ -84,7 +87,7 @@ parms <- cbind.data.frame(costs_per_acre, price_per_ton)
 
 # use pmap
 # takes function name and then names of all parameters that don't change
-results <- parms %>% pmap(almond_profit_function,
+results <- parms %>% pmap(almond_profit,
   baseline_yield = 1,
   yield_anomaly = almond_yield, clr = "green", #function output?
   profit = "$", g = FALSE, etype = "direct"    # I don't know what this line means
