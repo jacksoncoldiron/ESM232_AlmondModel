@@ -16,10 +16,29 @@ execute:
 ---
 
 ## Introduction
+This assignment builds on our almond yield anomaly model by incorporating an economic dimension—profit. Using yield anomalies calculated from climate data, we developed a profit model that estimates annual almond profits based on variable production costs and market prices. We then performed a simple sensitivity analysis to explore how uncertainty in key parameters—specifically cost per acre and price per ton—affects estimated profit across years. This analysis allows us to assess the robustness of almond profitability under different economic scenarios and visualize how sensitive outcomes are to these inputs.
 
 ## Data
-
 #### Data Description
+The climate dataset (clim.txt) contains daily weather observations including:
+
+day: Day of the month
+
+month: Calendar month
+
+year: Calendar year
+
+wy: Water year
+
+tmax_c: Daily maximum temperature (°C)
+
+tmin_c: Daily minimum temperature (°C)
+
+precip: Daily precipitation (mm)
+
+Other parameters: - location: California - time frame: 1989-2010 - yield model adjusted R\*\*2 = 0.88 - yield model developed from monthly averages aggregated to the state scale from 1980 - 2003 records. This excludes factors such as extreme heat events or spatial variations.
+
+These inputs are used to compute annual almond yield anomalies. The expected outputs include the maximum, minimum, and mean yield anomalies across all years in the dataset. According to the assignment benchmark, the modeled yield anomalies should approximately range between –0.027 to 1920 tons/acre, with a mean around 182 tons/acre.
 
 #### Data Processing
 

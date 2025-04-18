@@ -19,6 +19,7 @@ execute:
 This project implements a simplified model of almond yield anomaly in response to climate variables, adapted from the transfer functions developed by Lobell et al. (2006). The model estimates annual yield anomalies using daily climate data, specifically focusing on minimum and maximum temperatures and precipitation. The goal is to understand how year-to-year climate variability impacts almond productivity in California and to replicate expected yield patterns based on historical data.
 
 ## Data
+
 The climate dataset (clim.txt) contains daily weather observations including:
 
 day: Day of the month
@@ -35,21 +36,18 @@ tmin_c: Daily minimum temperature (°C)
 
 precip: Daily precipitation (mm)
 
-Other parameters:
-	- location: California
-	- time frame: 1989-2010
-	- yield model adjusted R**2 = 0.88
-	- yield model developed from monthly averages aggregated to the state scale from 1980 - 2003 records. This excludes factors such as extreme heat events or spatial variations.
+Other parameters: - location: California - time frame: 1989-2010 - yield model adjusted R\*\*2 = 0.88 - yield model developed from monthly averages aggregated to the state scale from 1980 - 2003 records. This excludes factors such as extreme heat events or spatial variations.
 
 These inputs are used to compute annual almond yield anomalies. The expected outputs include the maximum, minimum, and mean yield anomalies across all years in the dataset. According to the assignment benchmark, the modeled yield anomalies should approximately range between –0.027 to 1920 tons/acre, with a mean around 182 tons/acre.
 
 ## Conceptual Model
+
 ```{r}
 knitr::include_graphics(here::here("data", "assignment2_conceptualmodel.jpg"))
 ```
 
-
 ## Data Processing
+
 ```{r}
 # Import libraries
 library(tidyverse)
@@ -77,6 +75,7 @@ yearly_anomalies <- climate_data_raw |>
 ```
 
 ## Function Implementation
+
 ```{r}
 # Apply the function to each year
 yearly_anomalies <- yearly_anomalies |>
@@ -113,8 +112,8 @@ yearly_anomalies |>
   theme_classic()
 ```
 
-
 ## Results
+
 ```{r}
 # Display with kable
 yield_stats |>
@@ -122,5 +121,3 @@ yield_stats |>
   kable_styling(font_size = 12, full_width = FALSE)
 
 ```
-
-
