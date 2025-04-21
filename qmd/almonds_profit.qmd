@@ -96,7 +96,41 @@ yearly_profits <- yearly_anomalies |>
 
 ## Sensitivity Analysis
 
-#### Cost per ton Sensitivity - Kaitlin
+#### Almond Yield Sensitivity
+
+```{r}
+# generate samples for temperature coefficient
+nsamples <- 300
+
+temp_coeff <- rnorm(mean = 0.0046, sd = 0.1, n = nsamples)
+precip_coeff <- rnorm(mean = 0.0043, sd = 0.1, n = nsamples)
+
+coeff_parms <- cbind.data.frame(temp_coeff, precip_coeff)
+
+# create dataframe with all combinations of parameters
+
+coeff_sensitivity_df <- crossing(
+  yearly_anomalies,
+  coeff_parms
+)
+
+# run the yield anomaly function across the new dataframe
+sensitivity_yield <- coeff_sensitivity_df |>
+  mutate(
+    profit = pmap_dbl(
+      list(temp_coeff, precip_coeff, yield_anomaly),
+      ~ almond_yield_uncertainty(
+          temp_coeff = temp_coeff,
+          precip_coeff = precip_coeff,
+          Temperature = Tn,
+          Precipitation = P
+        )
+    )
+  )
+
+```
+
+#### Cost per ton Sensitivity 
 
 ```{r}
 # generate samples for both parameters
@@ -137,7 +171,13 @@ sensitivity_profit <- sensitivity_df |>
 
 ```
 
-#### Figure 1: Comparison of parameters sensitivity on profit
+#### Figure 1: Overall Variation of Yield Anomaly
+
+```{r}
+
+```
+
+#### Figure 2: Comparison of parameters sensitivity on profit
 
 ```{r}
 profit_time_box <- ggplot(sensitivity_profit, aes(x = factor(year), y = profit)) +
@@ -167,40 +207,6 @@ ggplot(summary_df_recent, aes(x = year)) +
   ) +
   theme_minimal()
 
-
-```
-
-#### Figure 2: Overall Variation of Yield Anomaly
-
-```{r}
-# generate samples for temperature coefficient
-nsamples <- 300
-
-temp_coeff <- rnorm(mean = 0.0046, sd = 0.1, n = nsamples)
-precip_coeff <- rnorm(mean = 0.0043, sd = 0.1, n = nsamples)
-
-coeff_parms <- cbind.data.frame(temp_coeff, precip_coeff)
-
-# create dataframe with all combinations of parameters
-
-coeff_sensitivity_df <- crossing(
-  yearly_anomalies,
-  coeff_parms
-)
-
-# run the yield anomaly function across the new dataframe
-sensitivity_yield <- coeff_sensitivity_df |>
-  mutate(
-    profit = pmap_dbl(
-      list(temp_coeff, precip_coeff, yield_anomaly),
-      ~ almond_yield_uncertainty(
-          temp_coeff = temp_coeff,
-          precip_coeff = precip_coeff,
-          Temperature = Tn,
-          Precipitation = P
-        )
-    )
-  )
 
 ```
 
