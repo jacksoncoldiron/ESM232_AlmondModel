@@ -107,10 +107,10 @@ yearly_profits <- yearly_anomalies |>
 # generate samples for temperature coefficient
 nsamples <- 300
 
-temp_coeff <- rnorm(mean = 0.0046, sd = 0.1, n = nsamples)
-precip_coeff <- rnorm(mean = 0.0043, sd = 0.1, n = nsamples)
+Tc <- rnorm(mean = 0.0046, sd = 0.1, n = nsamples)
+Pc <- rnorm(mean = 0.0043, sd = 0.1, n = nsamples)
 
-coeff_parms <- cbind.data.frame(temp_coeff, precip_coeff)
+coeff_parms <- cbind.data.frame(Tc, Pc)
 
 # create dataframe with all combinations of parameters
 
@@ -122,20 +122,20 @@ coeff_sensitivity_df <- crossing(
 # run the yield anomaly function across the new dataframe
 sensitivity_yield <- coeff_sensitivity_df |>
   mutate(
-    profit = pmap_dbl(
-      list(temp_coeff, precip_coeff, yield_anomaly),
-      ~ almond_yield_uncertainty(
-          temp_coeff = temp_coeff,
-          precip_coeff = precip_coeff,
-          Temperature = Tn,
-          Precipitation = P
+    new_yield = pmap_dbl(
+      list(Tc, Pc, Tn, P),
+      function(Tc, Pc, Tn, P) almond_yield_uncertainty(
+          Tc = Tc,
+          Pc = Pc,
+          Tn = Tn,
+          P = P
         )
     )
   )
 
 ```
 
-#### Cost per ton Sensitivity 
+#### Cost per ton Sensitivity
 
 ```{r}
 # generate samples for both parameters
@@ -182,10 +182,13 @@ sensitivity_profit_df <- sensitivity_df |>
 
 ```
 
+![](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAaCAYAAADFTB7LAAAAcElEQVR4Xu3OwQmAQAxE0bClWYCW5N06tM6V2YPg5CjoF/JhLoHAi6iqn9eOefUbqrYvHY0cQDLyAlKRNyARmYA0ZMLRkAlGQyaU72tkAtlim7r/vJqDUDjlKBROOQyFU2icQuMUGqfQuBEaV1XPOwEx96nYACK8+wAAAABJRU5ErkJggg== "Run Current Chunk")
+
 #### Figure 1: Overall Variation of Yield Anomaly
 
 ```{r}
-
+yield_sensitivity <- ggplot(sensitivity_yield, aes(x = factor(Tc), y = new_yield)) + 
+  geom_point()
 ```
 
 #### Figure 2: Comparison of parameters sensitivity on profit
