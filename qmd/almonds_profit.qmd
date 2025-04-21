@@ -1,5 +1,4 @@
 ---
-2222---
 title: "Almond Yield Anomalies"
 author: "Jackson Coldiron and Kaitlin Castor"
 editor: visual
@@ -209,7 +208,7 @@ ggarrange(a, b)
 
 ```{r}
 #| label: fig-profit
-#| fig.cap: **Almond profits Variation with Uncertainty in Price and Cost**. The graph on the left shows the variation in profit for each year, with uncertainty in price per ton and cost per acre. Because of the large variety in profit across years and major outliers in 1995, 2005 and 2008 the individual box plots for each year, however, are difficult to make out. So, the graph on the right shows just the variation in profit for 2010. 
+#| fig.cap: __Almond profits Variation with Uncertainty in Price and Cost__. The graph on the left shows the variation in profit for each year, with uncertainty in price per ton and cost per acre. Because of the large variety in profit across years and major outliers in 1995, 2005 and 2008 the individual box plots for each year, however, are difficult to make out. So, the graph on the right shows just the variation in profit for 2010. 
 
 sensitivity_profit_lastyear <- sensitivity_profit_df |>
   filter(year == 2010)
