@@ -106,6 +106,8 @@ Pc <- rnorm(mean = 0.0043, sd = 0.1, n = nsamples)
 coeff_parms <- cbind.data.frame(Tc, Pc)
 
 # create dataframe with all combinations of parameters
+yearly_anomalies <- suppressWarnings(as.numeric(yearly_anomalies))
+yearly_anomalies <- yearly_anomalies[!is.na(yearly_anomalies)]
 
 coeff_sensitivity_df <- crossing(
   yearly_anomalies,
@@ -237,3 +239,9 @@ annotate_figure(
 ```
 
 ## Discussion
+
+We ran two different models – almond yield uncertainty and almond profit – to understand how sensitive our almond yield is when faced with a range of different uncertainties.
+
+Our almond yield model investigated how uncertainty in temperature and precipitation coefficients affects almond yield anomaly for all years together.
+
+Our almond profit model investigated how uncertainty in cost per acre and price per ton (of almonds) affects total profit through time. Contrasting our first model, we analyzed only the combined effect on profit of these two uncertainties. Our results showcase pretty consistent results, with a couple of large outliers where there is a dramatic increase in profit. Taking a closer look at our yearly profit data table, these outliers are more likely correlated with outliers in yield anomaly for the given year, as opposed to our uncertainty parameters. Zooming in to 2010, we can see the uncertainty distribution more clearly for proft of the given year. The box plot is symetrical and showcases a profit price range from \$603,000 - \$607,000. As a result, our almond profit model is slightly sensitive to cost per acre and price per ton, fluctuating around \$5,000 every year.

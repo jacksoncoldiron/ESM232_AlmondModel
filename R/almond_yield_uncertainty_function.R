@@ -11,6 +11,7 @@
 
 
 almond_yield_uncertainty <- function(Tn, P, Tc, Pc) {
+
   # Calculate the yield anomaly based on the given parameters
   Y = -0.015 * Tn - Tc * Tn^2 - 0.07 * P + Pc * P^2 + 0.28
   
