@@ -194,33 +194,31 @@ yield_sensitivity <- ggplot(sensitivity_yield, aes(x = factor(Tc), y = new_yield
 #### Figure 2: Comparison of parameters sensitivity on profit
 
 ```{r}
-profit_time_box <- ggplot(sensitivity_profit, aes(x = factor(year), y = profit)) +
+#| label: fig-profit
+#| fig.cap: **Almond profits Variation with Uncertainty in Price and Cost**. The graph on the left shows the variation in profit for each year, with uncertainty in price per ton and cost per acre. Because of the large variety in profit across years and major outliers in 1995, 2005 and 2008 the individual box plots for each year, however, are difficult to make out. So, the graph on the right shows just the variation in profit for 2010. 
+
+sensitivity_profit_lastyear <- sensitivity_profit_df |>
+  filter(year == 2010)
+
+profit_time_box <- ggplot(sensitivity_profit_df, aes(x = factor(year), y = profit)) +
   geom_boxplot(fill = "#4682B4", alpha = 0.7, outlier.alpha = 0.2) +
-  scale_y_log10() +
   labs(
-    x = "Year",
+    x = "",
     y = "Profit ($/acre)"
   ) +
   theme_classic()
 
-summary_df_recent <- sensitivity_profit |>
-  filter(year >= 2000) |>
-  group_by(year) |>
-  summarise(
-    lower = quantile(profit, 0.05),
-    upper = quantile(profit, 0.95),
-    median = median(profit)
-  )
-
-ggplot(summary_df_recent, aes(x = year)) +
-  geom_ribbon(aes(ymin = lower, ymax = upper), fill = "skyblue", alpha = 0.3) +
-  geom_line(aes(y = median), color = "blue", linewidth = 1) +
+profit_time_lastyear <- ggplot(sensitivity_profit_lastyear, aes(x = factor(year), y = profit)) +
+  geom_boxplot(fill = "#4682B4", alpha = 0.7, outlier.alpha = 0.2) +
+   scale_y_continuous(position = "right") +
   labs(
-    title = "Almond Profit Over Time with Uncertainty",
-    x = "Year", y = "Profit ($/acre)"
+    x = "",
+    y = "Profit ($/acre)"
   ) +
-  theme_minimal()
+  theme_classic()
 
+library(ggpubr)
+ggarrange(profit_time_box, profit_time_lastyear)
 
 ```
 
