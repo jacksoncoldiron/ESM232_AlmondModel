@@ -54,6 +54,7 @@ library(purrr)
 library(tibble)
 library(knitr)
 library(kableExtra)
+library(ggpubr)
 
 # Define baseline yield
 baseline <- 5
@@ -84,19 +85,14 @@ yearly_anomalies <- climate_data_raw |>
 # Bring in the wrapper function
 source(here("R", "almond_wrapper_function.R"))
 
-almond_profit_wrapper(Tn = 10.5, P = 50)
-str(yearly_anomalies)
-
-
 # Apply wrapper function on each year
 yearly_profits <- yearly_anomalies |>
- mutate(
+  mutate(
     profit = pmap_dbl(
-      list(Tn = Tn, P = P),
-      function(Tn, P) almond_profit_wrapper(Tn, P)
+      list(Tn, P),
+      ~ almond_profit_wrapper(Tn, P)
     )
   )
-
 ```
 
 ## Sensitivity Analysis
@@ -187,8 +183,30 @@ sensitivity_profit_df <- sensitivity_df |>
 #### Figure 1: Overall Variation of Yield Anomaly
 
 ```{r}
-yield_sensitivity <- ggplot(sensitivity_yield, aes(x = factor(Tc), y = new_yield)) + 
-  geom_point()
+# create graph with both uncertainties
+a <- ggplot(sensitivity_yield, aes(x = factor(Tc), y = new_yield)) + 
+  geom_point(fill = Pc) + 
+  labs(
+    x = "Temperature Coefficient",
+    y = "Almond yield (ton / acre)"
+  ) +
+  theme_classic()
+
+# create graph switching visualization of uncertainties
+b <- ggplot(sensitivity_yield, aes(x = factor(Pc), y = new_yield)) + 
+  geom_point(fill = Tc) + 
+  labs(
+    x = "Precipitation Coefficient",
+    y = "Almond yield (ton / acre)"
+  ) +
+  theme_classic()
+
+#combine graphs
+ggarrange(a, b)
+
+
+
+
 ```
 
 #### Figure 2: Comparison of parameters sensitivity on profit
