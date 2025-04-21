@@ -156,16 +156,22 @@ sensitivity_df <- crossing(
 )
 
 # run the profit function across the new dataframe
-sensitivity_profit <- sensitivity_df |>
+sensitivity_profit_df <- sensitivity_df |>
   mutate(
     profit = pmap_dbl(
-      list(price_per_ton, costs_per_acre, yield_anomaly),
-      ~ almond_profit(
+      list(
+        price_per_ton = price_per_ton,
+        costs_per_acre = costs_per_acre,
+        yield_anomaly = yield_anomaly
+      ),
+      function(price_per_ton, costs_per_acre, yield_anomaly) {
+        almond_profit(
           price_per_ton = price_per_ton,
           costs_per_acre = costs_per_acre,
-          baseline_yield = baseline,
+          baseline_yield = 1.25,
           yield_anomaly = yield_anomaly
         )
+      }
     )
   )
 
