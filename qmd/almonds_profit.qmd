@@ -184,7 +184,7 @@ sensitivity_profit_df <- sensitivity_df |>
 
 ```{r}
 # create graph with both uncertainties
-a <- ggplot(sensitivity_yield, aes(Tc, new_yield, col = Pc) + 
+a <- ggplot(data = sensitivity_yield, aes(Tc, new_yield, col = Pc)) + 
   geom_point() + 
   labs(
     x = "Temperature Coefficient",
@@ -193,7 +193,7 @@ a <- ggplot(sensitivity_yield, aes(Tc, new_yield, col = Pc) +
   theme_classic()
 
 # create graph switching visualization of uncertainties
-b <- ggplot(sensitivity_yield, aes(Pc, new_yield, col = Tc)) + 
+b <- ggplot(data = sensitivity_yield, aes(Pc, new_yield, col = Tc)) + 
   geom_point() + 
   labs(
     x = "Precipitation Coefficient",
@@ -202,7 +202,8 @@ b <- ggplot(sensitivity_yield, aes(Pc, new_yield, col = Tc)) +
   theme_classic()
 
 #combine graphs
-ggarrange(a, b)
+sensitivity_yield_plot <- ggarrange(a, b)
+sensitivity_yield_plot
 ```
 
 #### Figure 2: Comparison of parameters sensitivity on profit
