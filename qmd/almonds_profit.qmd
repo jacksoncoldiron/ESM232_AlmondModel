@@ -7,7 +7,7 @@ format:
     code-fold: true
     embed-resources: true
     theme: lumen
-    toc: true
+    toc: false
 execute:
   freeze: auto 
   warning: false
@@ -22,21 +22,7 @@ This assignment builds on our almond yield anomaly model by incorporating an eco
 
 #### Data Description
 
-The climate dataset (clim.txt) contains daily weather observations including:
-
-day: Day of the month
-
-month: Calendar month
-
-year: Calendar year
-
-wy: Water year
-
-tmax_c: Daily maximum temperature (°C)
-
-tmin_c: Daily minimum temperature (°C)
-
-precip: Daily precipitation (mm)
+The climate dataset (clim.txt) contains daily weather observations including: day: Day of the month; month: Calendar month; year: Calendar year; wy: Water year; tmax_c: Daily maximum temperature (°C); tmin_c: Daily minimum temperature (°C); precip: Daily precipitation (mm)
 
 Other parameters: - location: California - time frame: 1989-2010 - yield model adjusted R\*\*2 = 0.88 - yield model developed from monthly averages aggregated to the state scale from 1980 - 2003 records. This excludes factors such as extreme heat events or spatial variations.
 
@@ -54,6 +40,7 @@ library(tibble)
 library(knitr)
 library(kableExtra)
 library(ggpubr)
+library(scales)
 
 # Define baseline yield
 baseline <- 5
@@ -180,6 +167,10 @@ sensitivity_profit_df <- sensitivity_df |>
 #### Figure 1: Overall Variation of Yield Anomaly
 
 ```{r}
+#| label: fig-yield
+#| fig-width: 10
+#| fig-cap: __Almond Yield Anomaly with Uncertainty in Climate Sensitivity Parameters.__ The left panel shows how variation in the temperature coefficient (Tc) affects yield anomaly, with colors indicating corresponding precipitation coefficient (Pc) values. The right panel reverses this, showing how yield anomaly varies with the precipitation coefficient (Pc), colored by temperature coefficient (Tc). Together, these plots illustrate how uncertainty in model parameters propagates into yield estimates, and highlight the interaction between temperature and precipitation sensitivity in almond yield response. Negative yields were removed from the dataset.
+
 # create graph with both uncertainties
 a <- ggplot(data = sensitivity_yield, aes(Tc, new_yield, col = Pc)) + 
   geom_point() + 
@@ -187,6 +178,7 @@ a <- ggplot(data = sensitivity_yield, aes(Tc, new_yield, col = Pc)) +
     x = "Temperature Coefficient",
     y = "Almond Yield Anomaly (ton / acre)"
   ) +
+  scale_y_continuous(labels = label_comma()) +
   theme_classic()
 
 # create graph switching visualization of uncertainties
@@ -194,8 +186,9 @@ b <- ggplot(data = sensitivity_yield, aes(Pc, new_yield, col = Tc)) +
   geom_point() + 
   labs(
     x = "Precipitation Coefficient",
-    y = "Almond Yield Anomaly (ton / acre)"
+    y = ""
   ) +
+  scale_y_continuous(labels = label_comma()) +
   theme_classic()
 
 #combine graphs
@@ -207,6 +200,7 @@ sensitivity_yield_plot
 
 ```{r}
 #| label: fig-profit
+#| fig-width: 10
 #| fig-cap: __Almond profits Variation with Uncertainty in Price and Cost__. The graph on the left shows the variation in profit for each year, with uncertainty in price per ton and cost per acre. Because of the large variety in profit across years and major outliers in 1995, 2005 and 2008 the individual box plots for each year, however, are difficult to make out. So, the graph on the right shows just the variation in profit for 2010. 
 
 sensitivity_profit_lastyear <- sensitivity_profit_df |>
@@ -218,6 +212,7 @@ every_fifth_year <- year_levels[as.numeric(year_levels) %% 5 == 0]
 profit_time_box <- ggplot(sensitivity_profit_df, aes(x = factor(year), y = profit)) +
   geom_boxplot(fill = "#4682B4", alpha = 0.7, outlier.alpha = 0.2) +
   labs(x = "", y = "") +
+  scale_y_continuous(labels = label_comma()) +
   scale_x_discrete(breaks = every_fifth_year) +
   theme_classic()
 
@@ -225,6 +220,7 @@ profit_time_lastyear <- ggplot(sensitivity_profit_lastyear, aes(x = factor(year)
   labs(x = "", y = "") +
   geom_boxplot(fill = "#4682B4", alpha = 0.7, outlier.alpha = 0.2) +
    scale_y_continuous(position = "left") +
+  scale_y_continuous(labels = label_comma()) +
   theme_classic()
 
 library(ggpubr)
