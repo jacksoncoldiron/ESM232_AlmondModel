@@ -106,13 +106,11 @@ Pc <- rnorm(mean = 0.0043, sd = 0.1, n = nsamples)
 coeff_parms <- cbind.data.frame(Tc, Pc)
 
 # create dataframe with all combinations of parameters
-yearly_anomalies <- suppressWarnings(as.numeric(yearly_anomalies))
-yearly_anomalies <- yearly_anomalies[!is.na(yearly_anomalies)]
 
 coeff_sensitivity_df <- crossing(
   yearly_anomalies,
   coeff_parms
-)
+) 
 
 # run the yield anomaly function across the new dataframe
 sensitivity_yield <- coeff_sensitivity_df |>
@@ -126,7 +124,9 @@ sensitivity_yield <- coeff_sensitivity_df |>
           P = P
         )
     )
-  )
+  ) 
+
+sensitivity_yield <- sensitivity_yield[!apply(sensitivity_yield < 0, 1, any), ]
 
 ```
 
@@ -153,7 +153,7 @@ parms <- cbind.data.frame(costs_per_acre, price_per_ton)
 sensitivity_df <- crossing(
   yearly_anomalies,
   parms
-)
+) 
 
 # run the profit function across the new dataframe
 sensitivity_profit_df <- sensitivity_df |>
